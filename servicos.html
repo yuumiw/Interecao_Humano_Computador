@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UniHub - Serviço: clínica veterinária</title>
+
+  <style>
+    /* =========================================
+       VARIÁVEIS GERAIS (CSS Variables)
+       Facilitam a manutenção. Para mudar as cores do app,
+       basta alterar os valores aqui.
+       ========================================= */
+    :root {
+      --roxo: #7c3aed;
+      --roxo-claro: #a78bfa;
+      --azul: #2563eb;
+      --gradiente: linear-gradient(135deg, #3a64ed 0%, #f574c3 100%);
+      --fundo: #f8fafc;
+      --branco: #ffffff;
+      --borda: #e2e8f0;
+      --texto: #1e293b;
+      --texto-fraco: #64748b;
+    }
+
+    /* =========================================
+       RESET BÁSICO E TIPOGRAFIA
+       ========================================= */
+    * {
+      box-sizing: border-box; /* Garante que padding não aumente a largura dos elementos */
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Remove as bolinhas padrão das listas, já que usamos <ul> para agrupamento semântico */
+    ul {
+      list-style: none;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f1f5f9; /* Cor do fundo fora da área do app (desktop) */
+      color: var(--texto);
+      line-height: 1.5;
+    }
+
+    /* =========================================
+       CONTAINER PRINCIPAL (O "Celular" virtual)
+       ========================================= */
+    #app {
+      width: 100%;
+      max-width: 480px; /* Trava a largura máxima para não esticar em monitores grandes */
+      margin: 0 auto; /* Centraliza a tela */
+      min-height: 100vh;
+      background: var(--branco);
+      display: flex;
+      flex-direction: column;
+      position: relative; /* Necessário para fixar o footer em relação ao app */
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+
+    /* =========================================
+       HEADER (CABEÇALHO)
+       ========================================= */
+    header {
+      background: var(--gradiente);
+      padding: 40px 20px;
+      border-radius: 0 0 30px 30px; /* Arredonda só a parte de baixo */
+      color: white;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+
+    .header-topo {
+      display: flex;
+      align-items: center;
+      gap: 16px; /* Espaço entre o botão de voltar e os textos */
+    }
+
+    /* Botão de voltar com efeito de transição ao passar o mouse */
+    .btn-voltar {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      border-radius: 12px;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: white;
+      transition: background 0.2s;
+    }
+    .btn-voltar:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    .header-info h1 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .header-info p {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    /* =========================================
+       MAIN (CONTEÚDO PRINCIPAL)
+       ========================================= */
+    main {
+      padding: 20px 16px 100px; /* 100px de padding embaixo impede que o menu cubra o conteúdo final */
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Estilo padrão para os blocos brancos (cards) */
+    .card {
+      background: var(--branco);
+      border: 1px solid var(--borda);
+      border-radius: 20px;
+      padding: 20px;
+    }
+    .card h2 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--texto-fraco);
+      margin-bottom: 12px;
+    }
+
+    /* =========================================
+       SEÇÃO: VAGAS E PROGRESS BAR
+       ========================================= */
+    .vagas-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline; /* Alinha o texto pela base das letras */
+    }
+    .vagas-numero {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--roxo);
+    }
+    .vagas-numero span {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--texto-fraco);
+    }
+    .barra-fundo {
+      width: 100%;
+      height: 10px;
+      background: #f1f5f9;
+      border-radius: 10px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+    .barra-fill {
+      width: 40%; /* Modifique esta porcentagem para mudar o preenchimento */
+      height: 100%;
+      background: var(--gradiente);
+    }
+
+    /* =========================================
+       SEÇÃO: GRID DE INFORMAÇÕES (Lista de Ícones)
+       ========================================= */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* 2 colunas de larguras iguais */
+      gap: 12px;
+    }
+    .info-card {
+      text-align: center;
+      padding: 16px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-card strong {
+      font-size: 14px;
+      display: block;
+      margin-top: 4px;
+    }
+
+    /* =========================================
+       SEÇÃO: FORMULÁRIO E INPUTS
+       ========================================= */
+    form { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 15px; 
+    }
+    label { 
+      font-size: 14px; 
+      font-weight: 600; 
+      margin-bottom: 4px; 
+      display: block; 
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--borda);
+      border-radius: 12px;
+      background: #f8fafc;
+      transition: all 0.2s;
+    }
+    /* Muda a cor da borda ao digitar no campo (foco) */
+    input:focus { 
+      border-color: var(--roxo); 
+      outline: none; 
+      background: #fff; 
+    }
+    .btn-agendar {
+      background: var(--gradiente);
+      color: white;
+      border: none;
+      padding: 18px;
+      border-radius: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(124, 58, 237, 0.2);
+    }
+
+    /* =========================================
+       FOOTER / MENU DE NAVEGAÇÃO
+       ========================================= */
+    footer {
+      position: fixed; /* Prende o menu na base da tela */
+      bottom: 0;
+      width: 100%;
+      max-width: 480px; /* CRÍTICO: Limita a largura igual à do #app para não quebrar no desktop */
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px); /* Cria o efeito translúcido (vidro) */
+      border-top: 1px solid var(--borda);
+      z-index: 100; /* Garante que fique por cima do resto do conteúdo */
+    }
+    .nav-lista {
+      display: flex;
+      justify-content: space-around; /* Espalha os botões igualmente */
+      padding: 12px 0 25px;
+    }
+    .nav-item {
+      text-decoration: none;
+      color: var(--texto-fraco);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .nav-item.ativo { color: var(--roxo); }
+
+    /* =========================================
+       RESPONSIVIDADE (MEDIA QUERIES)
+       ========================================= */
+    /* Para telas maiores (Desktops/Tablets) */
+    @media (min-width: 481px) {
+      body { padding: 40px 0; }
+      #app { border-radius: 30px; overflow: hidden; }
+      footer { border-radius: 0 0 30px 30px; }
+    }
+    /* Para telas de celular muito estreitas (ex: iPhone SE antigo) */
+    @media (max-width: 380px) {
+      .info-grid { grid-template-columns: 1fr; } /* Empilha os cards de informação em 1 única coluna */
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  
+  <header>
+    <div class="header-topo">
+      <button class="btn-voltar" aria-label="Voltar para a tela anterior">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <div class="header-info">
+        <h1>Clínica Veterinária</h1>
+        <p><span lang="en">UniHub</span> • Campus Central</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Vagas da Semana</h2>
+      <div class="vagas-container">
+          <p class="vagas-numero">08 <span>/ 20</span></p>
+          <span style="font-size: 12px; color: var(--roxo); font-weight: bold;">40% preenchido</span>
+      </div>
+      <div class="barra-fundo" role="img" aria-label="Gráfico de barras indicando 8 de 20 vagas ocupadas">
+        <div class="barra-fill"></div>
+      </div>
+    </section>
+
+    <ul class="info-grid" aria-label="Informações principais do serviço">
+        <li class="card info-card">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--roxo)" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <strong>Bloco C, Sala 12</strong>
+            <p style="font-size: 10px; color: var(--texto-fraco);">LOCALIZAÇÃO</p>
+        </li>
+        <li class="card info-card">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--roxo)" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            <strong>Gratuito</strong>
+            <p style="font-size: 10px; color: var(--texto-fraco);">CUSTO</p>
+        </li>
+        <li class="card info-card">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--roxo)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.71 3.4 2 2 0 0 1 3.68 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.1a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            <strong>(61) 9999-9999</strong>
+            <p style="font-size: 10px; color: var(--texto-fraco);">CONTATO</p>
+        </li>
+        <li class="card info-card">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--roxo)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            <strong>08</strong>
+            <p style="font-size: 10px; color: var(--texto-fraco);">VAGAS RESTANTES</p>
+        </li>
+    </ul>
+
+    <section class="card">
+      <h2 id="titulo-form">Agendar Consulta</h2>
+      <form>
+        <div>
+          <label for="nome">Nome do Tutor</label>
+          <input type="text" id="nome" placeholder="Seu nome completo" required aria-required="true">
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+                <label for="data">Data</label>
+                <input type="date" id="data" required aria-required="true">
+            </div>
+            <div>
+                <label for="tel">Telefone</label>
+                <input type="tel" id="tel" placeholder="(61) 9...">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-agendar">Confirmar Agendamento</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <nav aria-label="Menu de navegação inferior">
+      <ul class="nav-lista">
+        <li>
+          <a href="#" class="nav-item ativo" aria-current="page">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            Início
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Agenda
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Perfil
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </footer>
+
+</div>
+
+</body>
+</html>

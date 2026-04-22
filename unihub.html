@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UniHub — Portal Universitário</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink-50:  #fff0f5;
+      --pink-100: #ffe0eb;
+      --pink-200: #ffb3cc;
+      --pink-300: #ff80aa;
+      --pink-400: #f25580;
+      --pink-500: #d63060;
+      --pink-600: #a8204a;
+      --text-dark: #3a1a26;
+      --text-mid:  #7a4558;
+      --text-soft: #b07a8e;
+      --white:     #ffffff;
+      --bg:        #fff7fa;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --shadow:    0 4px 24px rgba(210,90,140,.10);
+      --shadow-focus: 0 0 0 3px rgba(210,90,140,.28);
+      --transition: .2s ease;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-dark);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* skip link */
+    .skip-link {
+      position: absolute; top: -100%; left: 1rem;
+      background: var(--pink-500); color: var(--white);
+      padding: .5rem 1rem; border-radius: var(--radius-sm);
+      font-size: .875rem; font-weight: 500; z-index: 1000;
+      text-decoration: none; transition: top var(--transition);
+    }
+    .skip-link:focus { top: 1rem; }
+
+    /* top navbar */
+    .topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--pink-100);
+      padding: 0 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(210,90,140,.06);
+    }
+    .topbar-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: var(--pink-500);
+      letter-spacing: -.01em;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      text-decoration: none;
+    }
+    .topbar-brand svg { flex-shrink: 0; }
+    .topbar-brand span {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .topbar-brand small {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .62rem;
+      font-weight: 400;
+      color: var(--text-soft);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .topbar-nav {
+      display: flex;
+      align-items: center;
+      gap: .25rem;
+    }
+    .topbar-nav a {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .45rem .85rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      font-size: .82rem;
+      font-weight: 400;
+      color: var(--text-mid);
+      transition: background var(--transition), color var(--transition);
+    }
+    .topbar-nav a:hover, .topbar-nav a:focus {
+      background: var(--pink-50);
+      color: var(--pink-500);
+      outline: none;
+    }
+    .topbar-nav a.active {
+      background: var(--pink-100);
+      color: var(--pink-500);
+      font-weight: 500;
+    }
+    .topbar-nav svg { flex-shrink: 0; }
+
+    /* main */
+    main { padding: 2.75rem 2.5rem; max-width: 820px; margin: 0 auto; }
+
+    .page-header { margin-bottom: 2.5rem; }
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem; color: var(--text-dark); font-weight: 500; line-height: 1.2;
+    }
+    .page-header p { color: var(--text-soft); font-size: .9rem; margin-top: .4rem; }
+
+    /* section cards */
+    .form-section {
+      background: var(--white); border: 1px solid var(--pink-100);
+      border-radius: var(--radius-lg); padding: 1.75rem 2rem;
+      margin-bottom: 2rem; box-shadow: var(--shadow);
+    }
+    .form-section-header {
+      display: flex; align-items: center; gap: .75rem;
+      margin-bottom: 1.5rem; padding-bottom: 1.1rem;
+      border-bottom: 1px solid var(--pink-100);
+    }
+    .section-icon {
+      width: 36px; height: 36px; background: var(--pink-50);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      color: var(--pink-400);
+    }
+    .form-section-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem; color: var(--text-dark); font-weight: 500;
+    }
+    .form-section-header p { font-size: .78rem; color: var(--text-soft); margin-top: 2px; }
+
+    /* form elements */
+    fieldset { border: none; padding: 0; margin: 0; }
+    legend {
+      font-size: .7rem; font-weight: 500; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--text-soft); margin-bottom: .9rem;
+    }
+    .field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .field-group.triple { grid-template-columns: 1fr 1fr 1fr; }
+
+    .field { display: flex; flex-direction: column; gap: .35rem; margin-bottom: 1rem; }
+    .field:last-child { margin-bottom: 0; }
+
+    label {
+      font-size: .78rem; font-weight: 500; color: var(--text-mid);
+      display: flex; align-items: center; gap: .25rem;
+    }
+    .req { color: var(--pink-400); font-size: .85rem; line-height: 1; }
+    .hint { font-size: .7rem; color: var(--text-soft); font-weight: 400; }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    input[type="search"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%; padding: .6rem .85rem;
+      border: 1px solid var(--pink-200);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif; font-size: .875rem;
+      color: var(--text-dark); background: var(--pink-50);
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      outline: none;
+    }
+    input:hover, select:hover, textarea:hover { border-color: var(--pink-300); }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--pink-400); background: var(--white); box-shadow: var(--shadow-focus);
+    }
+    input::placeholder, textarea::placeholder { color: var(--text-soft); opacity: .8; }
+    textarea { resize: vertical; min-height: 96px; line-height: 1.5; }
+
+    /* radio group */
+    .radio-group { display: flex; gap: .7rem; flex-wrap: wrap; margin-top: .2rem; }
+    .radio-group label {
+      display: flex; align-items: center; gap: .4rem;
+      font-size: .82rem; color: var(--text-mid); cursor: pointer; font-weight: 400;
+    }
+    .radio-group input[type="radio"] { width: 15px; height: 15px; accent-color: var(--pink-400); }
+
+    /* checkbox */
+    .checkbox-label {
+      display: flex; align-items: flex-start; gap: .55rem;
+      font-size: .8rem; color: var(--text-mid); font-weight: 400;
+      cursor: pointer; line-height: 1.5;
+    }
+    .checkbox-label input[type="checkbox"] {
+      width: 15px; height: 15px; flex-shrink: 0; margin-top: 3px;
+      accent-color: var(--pink-400);
+    }
+    .checkbox-label a { color: var(--pink-500); text-underline-offset: 2px; }
+
+    /* stars */
+    .stars { display: flex; gap: .2rem; flex-direction: row-reverse; justify-content: flex-end; }
+    .stars input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .stars label {
+      font-size: 1.4rem; cursor: pointer; color: var(--pink-200);
+      transition: color var(--transition); margin: 0; font-weight: 400;
+    }
+    .stars input:checked ~ label,
+    .stars label:hover,
+    .stars label:hover ~ label { color: var(--pink-400); }
+    .stars input:focus + label { outline: 2px solid var(--pink-400); outline-offset: 2px; border-radius: 2px; }
+
+    /* strength bar */
+    .strength-bar { height: 4px; border-radius: 4px; background: var(--pink-100); overflow: hidden; margin-top: .35rem; }
+    .strength-fill { height: 100%; border-radius: 4px; background: var(--pink-300); width: 0%; transition: width .3s ease, background .3s ease; }
+    .strength-label { font-size: .68rem; color: var(--text-soft); margin-top: .2rem; }
+
+    /* search row */
+    .search-row { display: flex; gap: .7rem; align-items: flex-end; }
+    .search-row .field { flex: 1; margin-bottom: 0; }
+
+    /* password toggle */
+    .password-wrapper { position: relative; }
+    .password-wrapper input { padding-right: 2.5rem; }
+    .password-toggle {
+      position: absolute; right: .75rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; padding: 0;
+      color: var(--text-soft); display: flex; align-items: center;
+      transition: color var(--transition);
+    }
+    .password-toggle:hover { color: var(--pink-400); }
+    .password-toggle:focus { outline: 2px solid var(--pink-400); outline-offset: 2px; border-radius: 4px; }
+
+    /* divider */
+    .divider {
+      display: flex; align-items: center; gap: .7rem;
+      margin: 1rem 0; color: var(--text-soft); font-size: .75rem;
+    }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--pink-100); }
+
+    /* alert */
+    .alert {
+      display: none; align-items: center; gap: .65rem;
+      padding: .65rem .9rem; border-radius: var(--radius-sm);
+      font-size: .8rem; margin-bottom: 1rem;
+    }
+    .alert.success { background: #fdf4f6; border: 1px solid var(--pink-200); color: var(--pink-600); }
+    .alert.show { display: flex; }
+
+    /* buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
+      padding: .65rem 1.6rem; border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 500;
+      cursor: pointer; transition: all var(--transition); border: 1px solid transparent;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--pink-400); color: var(--white); border-color: var(--pink-400); }
+    .btn-primary:hover { background: var(--pink-500); border-color: var(--pink-500); }
+    .btn-primary:focus { outline: none; box-shadow: var(--shadow-focus); }
+    .btn-primary:active { transform: scale(.98); }
+    .btn-ghost { background: transparent; color: var(--text-mid); border-color: var(--pink-200); }
+    .btn-ghost:hover { background: var(--pink-50); border-color: var(--pink-300); color: var(--pink-500); }
+    .btn-ghost:focus { outline: none; box-shadow: var(--shadow-focus); }
+
+    .form-actions {
+      display: flex; align-items: center; justify-content: flex-end; gap: .65rem;
+      margin-top: 1.5rem; padding-top: 1.1rem; border-top: 1px solid var(--pink-100);
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--pink-50); }
+    ::-webkit-scrollbar-thumb { background: var(--pink-200); border-radius: 3px; }
+
+    @media (max-width: 680px) {
+      .topbar { padding: 0 1.1rem; }
+      .topbar-nav { display: none; }
+      main { padding: 1.75rem 1.1rem; }
+      .field-group, .field-group.triple { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+
+<!-- TOP NAVBAR -->
+<header class="topbar" role="banner">
+  <a href="#" class="topbar-brand" aria-label="UniHub — Portal Universitário">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M11 2L2 7v2h18V7L11 2z" fill="currentColor" opacity=".25"/>
+      <rect x="4" y="9" width="2.5" height="7" rx="1" fill="currentColor"/>
+      <rect x="9.75" y="9" width="2.5" height="7" rx="1" fill="currentColor"/>
+      <rect x="15.5" y="9" width="2.5" height="7" rx="1" fill="currentColor"/>
+      <rect x="2" y="17" width="18" height="2" rx="1" fill="currentColor"/>
+      <circle cx="11" cy="5.5" r="1.5" fill="currentColor"/>
+    </svg>
+    <span>
+      UniHub
+      <small>portal universitário</small>
+    </span>
+  </a>
+  <nav class="topbar-nav" aria-label="Seções do portal">
+    <a href="#cadastro" class="active" aria-current="page">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Cadastro
+    </a>
+    <a href="#login">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      Entrar
+    </a>
+    <a href="#agendamento">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Agendamento
+    </a>
+    <a href="#avaliacao">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Avaliação
+    </a>
+    <a href="#busca">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Buscar
+    </a>
+  </nav>
+</header>
+
+<main id="main-content">
+
+  <header class="page-header">
+    <h1>Portal UniHub</h1>
+    <p>Cadastre-se, acesse sua conta, agende serviços e explore eventos e palestras da sua instituição.</p>
+  </header>
+
+  <!-- ══════════════════════════════ -->
+  <!--  1. CADASTRO                  -->
+  <!-- ══════════════════════════════ -->
+  <section class="form-section" id="cadastro" aria-labelledby="h-cadastro">
+    <div class="form-section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.87"/></svg>
+      </div>
+      <div>
+        <h2 id="h-cadastro">Criar conta</h2>
+        <p>Aluno, servidor ou visitante — acesse os serviços da sua faculdade</p>
+      </div>
+    </div>
+
+    <div class="alert success" id="msg-cadastro" role="alert" aria-live="polite">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+      Conta criada com sucesso! Bem-vindo(a) ao UniHub.
+    </div>
+
+    <form id="form-cadastro" novalidate aria-labelledby="h-cadastro">
+
+      <fieldset>
+        <legend>Dados pessoais</legend>
+        <div class="field-group">
+          <div class="field">
+            <label for="nome">Nome completo <span class="req" aria-label="obrigatório">*</span></label>
+            <input type="text" id="nome" name="nome" autocomplete="name"
+              placeholder="Ex.: Maria Souza" required aria-required="true"
+              aria-describedby="nome-hint" />
+            <span id="nome-hint" class="hint">Como consta no seu documento</span>
+          </div>
+          <div class="field">
+            <label for="telefone">Telefone <span class="req" aria-label="obrigatório">*</span></label>
+            <input type="tel" id="telefone" name="telefone" autocomplete="tel"
+              placeholder="(00) 00000-0000" required aria-required="true"
+              aria-describedby="tel-hint" pattern="[\d\s()\-+]+" />
+            <span id="tel-hint" class="hint">Com DDD, apenas números</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="email">E-mail institucional <span class="req" aria-label="obrigatório">*</span></label>
+          <input type="email" id="email" name="email" autocomplete="email"
+            placeholder="seu@faculdade.edu.br" required aria-required="true"
+            aria-describedby="email-hint" />
+          <span id="email-hint" class="hint">Use o e-mail fornecido pela sua instituição</span>
+        </div>
+      </fieldset>
+
+      <fieldset style="margin-top:1.4rem">
+        <legend>Perfil de acesso</legend>
+        <div class="field">
+          <label for="instituicao">Instituição <span class="req" aria-label="obrigatório">*</span></label>
+          <select id="instituicao" name="instituicao" required aria-required="true" aria-describedby="inst-hint">
+            <option value="">Selecione sua faculdade…</option>
+            <option value="facamp">FACAMP</option>
+            <option value="unicamp">UNICAMP</option>
+            <option value="usp">USP</option>
+            <option value="unesp">UNESP</option>
+            <option value="puc">PUC-Campinas</option>
+            <option value="outra">Outra instituição</option>
+          </select>
+          <span id="inst-hint" class="hint">Sua faculdade deve estar cadastrada no UniHub</span>
+        </div>
+        <div class="field">
+          <label id="perfil-lbl">Tipo de usuário <span class="req" aria-label="obrigatório">*</span></label>
+          <div class="radio-group" role="group" aria-labelledby="perfil-lbl">
+            <label><input type="radio" name="perfil" value="aluno" checked required /> Aluno</label>
+            <label><input type="radio" name="perfil" value="servidor" /> Servidor</label>
+            <label><input type="radio" name="perfil" value="visitante" /> Visitante externo</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset style="margin-top:1.4rem">
+        <legend>Segurança</legend>
+        <div class="field-group">
+          <div class="field">
+            <label for="senha">Senha <span class="req" aria-label="obrigatório">*</span></label>
+            <div class="password-wrapper">
+              <input type="password" id="senha" name="senha" autocomplete="new-password"
+                placeholder="Mínimo 8 caracteres" required aria-required="true"
+                aria-describedby="senha-hint strength-lbl" minlength="8" />
+              <button type="button" class="password-toggle" aria-label="Mostrar senha" data-target="senha">
+                <svg class="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-off-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+            <div class="strength-bar" role="presentation">
+              <div class="strength-fill" id="strength-fill"></div>
+            </div>
+            <span id="strength-lbl" class="strength-label" aria-live="polite"></span>
+            <span id="senha-hint" class="hint">Use letras, números e símbolos</span>
+          </div>
+          <div class="field">
+            <label for="conf-senha">Confirmar senha <span class="req" aria-label="obrigatório">*</span></label>
+            <div class="password-wrapper">
+              <input type="password" id="conf-senha" name="conf-senha" autocomplete="new-password"
+                placeholder="Repita a senha" required aria-required="true"
+                aria-describedby="conf-hint" />
+              <button type="button" class="password-toggle" aria-label="Mostrar senha" data-target="conf-senha">
+                <svg class="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-off-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+            <span id="conf-hint" class="hint">Deve ser idêntica à senha</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="field" style="margin-top:1.2rem">
+        <label class="checkbox-label">
+          <input type="checkbox" name="termos" required aria-required="true" />
+          Concordo com os <a href="#" aria-label="Abrir Termos de Uso">Termos de Uso</a>
+          e a <a href="#" aria-label="Abrir Política de Privacidade">Política de Privacidade</a> do UniHub
+        </label>
+      </div>
+
+      <div class="field" style="margin-top:.5rem">
+        <label class="checkbox-label">
+          <input type="checkbox" name="notificacoes" />
+          Quero receber notificações sobre eventos e serviços da minha instituição
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="reset" class="btn btn-ghost">Limpar</button>
+        <button type="submit" class="btn btn-primary">Criar conta</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ══════════════════════════════ -->
+  <!--  2. LOGIN                     -->
+  <!-- ══════════════════════════════ -->
+  <section class="form-section" id="login" aria-labelledby="h-login">
+    <div class="form-section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      </div>
+      <div>
+        <h2 id="h-login">Entrar no UniHub</h2>
+        <p>Acesse serviços, eventos e agendamentos da sua faculdade</p>
+      </div>
+    </div>
+
+    <div class="alert success" id="msg-login" role="alert" aria-live="polite">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+      Login realizado com sucesso!
+    </div>
+
+    <form id="form-login" novalidate aria-labelledby="h-login">
+      <fieldset>
+        <legend>Suas credenciais</legend>
+        <div class="field">
+          <label for="login-email">E-mail institucional <span class="req" aria-label="obrigatório">*</span></label>
+          <input type="email" id="login-email" name="email" autocomplete="email"
+            placeholder="seu@faculdade.edu.br" required aria-required="true" />
+        </div>
+        <div class="field">
+          <label for="login-senha">Senha <span class="req" aria-label="obrigatório">*</span></label>
+          <div class="password-wrapper">
+            <input type="password" id="login-senha" name="senha" autocomplete="current-password"
+              placeholder="Sua senha" required aria-required="true" />
+            <button type="button" class="password-toggle" aria-label="Mostrar senha" data-target="login-senha">
+              <svg class="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-off-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="field" style="margin-top:.2rem">
+          <label class="checkbox-label">
+            <input type="checkbox" name="lembrar" />
+            Lembrar de mim neste dispositivo
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="form-actions" style="flex-direction:column;align-items:stretch;gap:.7rem">
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Entrar</button>
+        <div class="divider">ou</div>
+        <a href="#cadastro" class="btn btn-ghost" style="width:100%;justify-content:center">Criar conta gratuita</a>
+      </div>
+      <p style="font-size:.75rem;color:var(--text-soft);text-align:center;margin-top:.9rem">
+        <a href="#" style="color:var(--pink-500);text-underline-offset:2px">Esqueceu sua senha?</a>
+      </p>
+    </form>
+  </section>
+
+  <!-- ══════════════════════════════ -->
+  <!--  3. AGENDAMENTO               -->
+  <!-- ══════════════════════════════ -->
+  <section class="form-section" id="agendamento" aria-labelledby="h-agendamento">
+    <div class="form-section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div>
+        <h2 id="h-agendamento">Agendar serviço</h2>
+        <p>Marque atendimentos, eventos e palestras disponíveis na sua instituição</p>
+      </div>
+    </div>
+
+    <div class="alert success" id="msg-agendamento" role="alert" aria-live="polite">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+      Agendamento realizado! Você receberá uma confirmação por e-mail.
+    </div>
+
+    <form id="form-agendamento" novalidate aria-labelledby="h-agendamento">
+
+      <fieldset>
+        <legend>Tipo de atividade</legend>
+        <div class="field">
+          <label for="tipo-atividade">Categoria <span class="req" aria-label="obrigatório">*</span></label>
+          <select id="tipo-atividade" name="tipo" required aria-required="true" aria-describedby="tipo-hint">
+            <option value="">Selecione o tipo de atividade…</option>
+            <optgroup label="Serviços">
+              <option value="psicologia">Atendimento psicológico</option>
+              <option value="orientacao">Orientação acadêmica</option>
+              <option value="biblioteca">Reserva na biblioteca</option>
+              <option value="laboratorio">Laboratório de informática</option>
+            </optgroup>
+            <optgroup label="Eventos">
+              <option value="palestra">Palestra</option>
+              <option value="workshop">Workshop</option>
+              <option value="seminario">Seminário</option>
+              <option value="feira">Feira de estágios</option>
+            </optgroup>
+          </select>
+          <span id="tipo-hint" class="hint">Os serviços disponíveis dependem da sua instituição</span>
+        </div>
+      </fieldset>
+
+      <fieldset style="margin-top:1.2rem">
+        <legend>Data e horário</legend>
+        <div class="field-group">
+          <div class="field">
+            <label for="data-agend">Data preferida <span class="req" aria-label="obrigatório">*</span></label>
+            <input type="date" id="data-agend" name="data" required aria-required="true" />
+          </div>
+          <div class="field">
+            <label for="horario">Horário <span class="req" aria-label="obrigatório">*</span></label>
+            <select id="horario" name="horario" required aria-required="true">
+              <option value="">Selecione…</option>
+              <option value="08:00">08:00</option>
+              <option value="09:00">09:00</option>
+              <option value="10:00">10:00</option>
+              <option value="11:00">11:00</option>
+              <option value="13:00">13:00</option>
+              <option value="14:00">14:00</option>
+              <option value="15:00">15:00</option>
+              <option value="16:00">16:00</option>
+              <option value="17:00">17:00</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label id="modalidade-lbl">Modalidade</label>
+          <div class="radio-group" role="group" aria-labelledby="modalidade-lbl">
+            <label><input type="radio" name="modalidade" value="presencial" checked /> Presencial</label>
+            <label><input type="radio" name="modalidade" value="online" /> Online (videoconferência)</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset style="margin-top:1.2rem">
+        <legend>Informações complementares</legend>
+        <div class="field">
+          <label for="obs-agend">Observações</label>
+          <textarea id="obs-agend" name="observacoes"
+            placeholder="Descreva suas necessidades ou dúvidas para o atendimento…"
+            aria-describedby="obs-hint"
+            maxlength="500"></textarea>
+          <span id="obs-hint" class="hint">Opcional — até 500 caracteres</span>
+        </div>
+        <div class="field" style="margin-top:.2rem">
+          <label class="checkbox-label">
+            <input type="checkbox" name="lembrete" />
+            Enviar lembrete por e-mail 24h antes do agendamento
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="form-actions">
+        <button type="reset" class="btn btn-ghost">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Confirmar agendamento</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ══════════════════════════════ -->
+  <!--  4. AVALIAÇÃO                 -->
+  <!-- ══════════════════════════════ -->
+  <section class="form-section" id="avaliacao" aria-labelledby="h-avaliacao">
+    <div class="form-section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div>
+        <h2 id="h-avaliacao">Avaliar serviço</h2>
+        <p>Sua opinião melhora a qualidade dos serviços oferecidos</p>
+      </div>
+    </div>
+
+    <div class="alert success" id="msg-avaliacao" role="alert" aria-live="polite">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+      Obrigado pela sua avaliação! Ela ajuda a melhorar o UniHub.
+    </div>
+
+    <form id="form-avaliacao" novalidate aria-labelledby="h-avaliacao">
+      <fieldset>
+        <legend>Avaliação</legend>
+
+        <div class="field">
+          <label id="nota-lbl">Sua nota <span class="req" aria-label="obrigatório">*</span></label>
+          <div class="stars" role="group" aria-labelledby="nota-lbl" aria-required="true">
+            <input type="radio" id="s5" name="nota" value="5" required aria-label="5 estrelas — Excelente" />
+            <label for="s5" title="Excelente">★</label>
+            <input type="radio" id="s4" name="nota" value="4" aria-label="4 estrelas — Muito bom" />
+            <label for="s4" title="Muito bom">★</label>
+            <input type="radio" id="s3" name="nota" value="3" aria-label="3 estrelas — Bom" />
+            <label for="s3" title="Bom">★</label>
+            <input type="radio" id="s2" name="nota" value="2" aria-label="2 estrelas — Regular" />
+            <label for="s2" title="Regular">★</label>
+            <input type="radio" id="s1" name="nota" value="1" aria-label="1 estrela — Ruim" />
+            <label for="s1" title="Ruim">★</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="servico-avaliado">Serviço avaliado</label>
+          <select id="servico-avaliado" name="servico" aria-describedby="serv-hint">
+            <option value="">Selecione o serviço…</option>
+            <option value="psicologia">Atendimento psicológico</option>
+            <option value="orientacao">Orientação acadêmica</option>
+            <option value="biblioteca">Reserva na biblioteca</option>
+            <option value="palestra">Palestra / evento</option>
+            <option value="outro">Outro</option>
+          </select>
+          <span id="serv-hint" class="hint">Ajuda a direcionar sua avaliação ao setor responsável</span>
+        </div>
+      </fieldset>
+
+      <fieldset style="margin-top:1.2rem">
+        <legend>Detalhes</legend>
+        <div class="field-group">
+          <div class="field">
+            <label for="av-nome">Nome (opcional)</label>
+            <input type="text" id="av-nome" name="nome" autocomplete="name"
+              placeholder="Como podemos te chamar?" />
+          </div>
+          <div class="field">
+            <label for="av-email">E-mail (opcional)</label>
+            <input type="email" id="av-email" name="email" autocomplete="email"
+              placeholder="Para retornarmos contato" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="mensagem">Comentário <span class="req" aria-label="obrigatório">*</span></label>
+          <textarea id="mensagem" name="mensagem"
+            placeholder="Descreva sua experiência com o serviço ou evento…"
+            required aria-required="true" aria-describedby="msg-hint"
+            minlength="10" maxlength="1000"></textarea>
+          <span id="msg-hint" class="hint">Entre 10 e 1000 caracteres</span>
+        </div>
+      </fieldset>
+
+      <div class="form-actions">
+        <button type="reset" class="btn btn-ghost">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Enviar avaliação</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ══════════════════════════════ -->
+  <!--  5. BUSCA                     -->
+  <!-- ══════════════════════════════ -->
+  <section class="form-section" id="busca" aria-labelledby="h-busca">
+    <div class="form-section-header">
+      <div class="section-icon" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <div>
+        <h2 id="h-busca">Buscar no UniHub</h2>
+        <p>Encontre serviços, eventos e palestras disponíveis</p>
+      </div>
+    </div>
+
+    <form id="form-busca" role="search" aria-labelledby="h-busca">
+      <fieldset>
+        <legend>O que você procura?</legend>
+        <div class="search-row">
+          <div class="field">
+            <label for="busca-input">Termo de busca <span class="req" aria-label="obrigatório">*</span></label>
+            <input type="search" id="busca-input" name="busca"
+              placeholder="Ex.: palestra de direito, orientação acadêmica…"
+              required aria-required="true"
+              aria-label="Campo de busca principal"
+              autocomplete="off" enterkeyhint="search" />
+          </div>
+          <button type="submit" class="btn btn-primary" aria-label="Buscar" style="height:38px;flex-shrink:0;align-self:flex-end;margin-bottom:0">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Buscar
+          </button>
+        </div>
+      </fieldset>
+
+      <fieldset style="margin-top:1.1rem">
+        <legend>Filtros avançados</legend>
+        <div class="field-group triple">
+          <div class="field">
+            <label for="f-tipo">Tipo de atividade</label>
+            <select id="f-tipo" name="tipo">
+              <option value="">Todos</option>
+              <option value="servico">Serviços</option>
+              <option value="evento">Eventos</option>
+              <option value="palestra">Palestras</option>
+              <option value="workshop">Workshops</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-inicio">Data início</label>
+            <input type="date" id="f-inicio" name="data_inicio" aria-label="Data de início do período" />
+          </div>
+          <div class="field">
+            <label for="f-fim">Data fim</label>
+            <input type="date" id="f-fim" name="data_fim" aria-label="Data de fim do período" />
+          </div>
+        </div>
+        <div class="field" style="margin-top:.4rem">
+          <label id="ord-lbl">Ordenar por</label>
+          <div class="radio-group" role="group" aria-labelledby="ord-lbl">
+            <label><input type="radio" name="ordenar" value="relevancia" checked /> Relevância</label>
+            <label><input type="radio" name="ordenar" value="recente" /> Mais recente</label>
+            <label><input type="radio" name="ordenar" value="antigo" /> Mais antigo</label>
+            <label><input type="radio" name="ordenar" value="az" /> A–Z</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="form-actions">
+        <button type="reset" class="btn btn-ghost">Limpar filtros</button>
+        <button type="submit" class="btn btn-primary">Pesquisar</button>
+      </div>
+    </form>
+  </section>
+
+</main>
+
+<script>
+  /* password toggle */
+  document.querySelectorAll('.password-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = document.getElementById(btn.dataset.target);
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      btn.querySelector('.eye-icon').style.display    = isPassword ? 'none'  : '';
+      btn.querySelector('.eye-off-icon').style.display = isPassword ? ''     : 'none';
+      btn.setAttribute('aria-label', isPassword ? 'Ocultar senha' : 'Mostrar senha');
+    });
+  });
+
+  /* topbar active on scroll */
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('.topbar-nav a').forEach(a => {
+          const active = a.getAttribute('href') === '#' + e.target.id;
+          a.classList.toggle('active', active);
+          if (active) a.setAttribute('aria-current','page');
+          else a.removeAttribute('aria-current');
+        });
+      }
+    });
+  }, { threshold: .45 });
+  document.querySelectorAll('section[id]').forEach(s => obs.observe(s));
+
+  /* password strength */
+  const senhaEl = document.getElementById('senha');
+  const fillEl  = document.getElementById('strength-fill');
+  const lblEl   = document.getElementById('strength-lbl');
+  senhaEl.addEventListener('input', () => {
+    const v = senhaEl.value;
+    let score = 0;
+    if (v.length >= 8) score++;
+    if (/[A-Z]/.test(v)) score++;
+    if (/[0-9]/.test(v)) score++;
+    if (/[^A-Za-z0-9]/.test(v)) score++;
+    fillEl.style.width = (score/4*100) + '%';
+    const bg = ['#e74c3c','#e67e22','#f1c40f','#2ecc71'];
+    const lb = ['Muito fraca','Fraca','Média','Forte'];
+    fillEl.style.background = bg[score-1] || 'var(--pink-200)';
+    lblEl.textContent = v.length ? (lb[score-1]||'') : '';
+  });
+
+  /* generic submit handler */
+  function bindForm(fId, msgId) {
+    document.getElementById(fId).addEventListener('submit', e => {
+      e.preventDefault();
+      const m = document.getElementById(msgId);
+      m.classList.add('show');
+      setTimeout(() => m.classList.remove('show'), 4000);
+      e.target.reset();
+      if (fId === 'form-cadastro') { fillEl.style.width='0'; lblEl.textContent=''; }
+    });
+  }
+  bindForm('form-cadastro', 'msg-cadastro');
+  bindForm('form-login',    'msg-login');
+  bindForm('form-agendamento', 'msg-agendamento');
+  bindForm('form-avaliacao', 'msg-avaliacao');
+
+  /* date range guard */
+  const di = document.getElementById('f-inicio');
+  const df = document.getElementById('f-fim');
+  di.addEventListener('change', () => df.min = di.value);
+  df.addEventListener('change', () => di.max = df.value);
+</script>
+</body>
+</html>
